@@ -1,0 +1,2603 @@
+﻿LABORATORY MANUAL 
+ 
+Department:  Computer Science & Enginerring 
+
+Course:   HYPERLEDGER FABRIC LAB 
+
+Course Code:  SCSA 2704 
+
+Faculty Incharge: Dr. Pradnya B. Patil 
+
+Year/Semester: IV/VII 
+
+ 
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+ 
+ 
+
+SAFETY PROTOCOLS AND GENERAL 
+GUIDELINES 
+
+ 
+ 
+
+1. Laboratory Safety Requirements 
+
+• Personal Hygiene: Wash hands before handling equipment 
+
+• Workspace Management: Keep workstation clean and organized 
+
+• Electrical Safety: Report damaged cables or equipment immediately 
+
+• Emergency Procedures: Know location of emergency exits and fire extinguishers 
+
+• No Consumption: Food and beverages prohibited in laboratory premises 
+
+ 
+
+2. System Security Protocols 
+
+• Use only assigned workstation credentials 
+
+• Implement strong password policies (minimum 8 characters, alphanumeric) 
+
+• Prohibit unauthorized software installation 
+
+• Log out completely at session termination 
+
+• Report security incidents immediately to instructor 
+
+ 
+
+3. Data Management Standards 
+
+• Create regular backups of experimental data 
+
+• Use institutional cloud storage for data retention 
+
+• Maintain version control for all project files 
+
+• Secure sensitive data with appropriate access controls 
+
+• Delete temporary files upon session completion 
+
+
+
+ 
+ 
+
+List of Experiments 
+ 
+ 
+
+Sr. Title of the Experiment 
+No. 
+1 FabCar – Managing Car Assets on Blockchain 
+
+ 
+2 Library Book Management System  
+
+ 
+3 Student Record Management System  
+
+ 
+4 Peer to peer Fund Transfer 
+
+ 
+5 Employee Payroll Management 
+
+ 
+6 Property Registration and Transfer System 
+
+ 
+7 Academic Credential Verification 
+
+ 
+8 E-commerce Product Catalog 
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+
+ 
+
+
+
+Setting Up the Development Environment for 
+
+Hyperledger Fabric 
+
+Prerequisites 
+
+1. Install Docker Desktop (with WSL2) 
+
+• Download: https://www.docker.com/products/docker-desktop 
+
+• During installation, make sure to: 
+
+o Enable WSL2 integration 
+
+o Install Ubuntu 20.04 from the Microsoft Store 
+
+o Set Docker to use WSL2 as the backend 
+
+ 
+
+2. Install Ubuntu from Microsoft Store 
+
+• Open the Microsoft Store 
+
+• Search for "Ubuntu 20.04 LTS" and install it 
+
+• Open it from Start Menu once installed 
+
+ 
+
+ 
+
+3. Initial Ubuntu Setup 
+
+• Launch Ubuntu 
+
+• Create a new user when prompted 
+
+• Update packages: 
+
+• sudo apt update && sudo apt upgrade -y 
+
+ 
+
+Set Up Hyperledger Fabric in Ubuntu (WSL2) 
+
+4. Install Required Tools 
+
+Inside Ubuntu (WSL2 terminal): 
+
+sudo apt install -y curl git docker-compose gcc g++ 
+
+make Ensure Docker works from WSL: 
+
+docker --version 
+
+
+
+docker info 
+
+(Should show no errors) 
+
+5. Install Go (v1.20+) 
+
+sudo apt install -y golang-
+
+go go version 
+
+If the version is <1.20, use official 
+
+installer: sudo rm -rf /usr/local/go 
+
+curl -LO https://golang.org/dl/go1.20.10.linux-
+
+amd64.tar.gz sudo tar -C /usr/local -xzf 
+
+go1.20.10.linux-amd64.tar.gz echo "export 
+
+PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc source 
+
+~/.bashrc 
+
+go version 
+
+ 
+
+6. Download Fabric Samples & 
+
+Binaries mkdir -p ~/fabric-dev && 
+
+cd ~/fabric-dev curl -sSL 
+
+https://bit.ly/2ysbOFE | bash -s This 
+
+downloads: 
+
+• Binaries (peer, orderer, etc.) 
+
+• fabric-samples folder 
+
+• Docker images for Fabric components 
+
+ 
+
+
+
+Experiment 1: FabCar – Managing Car Assets on 
+
+Blockchain 
+
+Aim: 
+
+To deploy and interact with the FabCar chaincode on a Hyperledger Fabric test network to 
+
+demonstrate asset creation, querying, and transfer. 
+
+ 
+
+Prerequisites: 
+
+• Fabric environment set up in Ubuntu (WSL2) 
+
+• Docker running 
+
+• fabric-samples repository cloned 
+
+• Go and Docker installed correctly 
+
+ 
+
+Directory Structure: 
+
+Navigate to: 
+
+cd ~/fabric-dev/fabric-samples/fabcar 
+
+ 
+
+Steps: 
+
+1. Start the Test Network 
+
+cd ../test-network 
+
+./network.sh down # Clean slate 
+
+./network.sh up createChannel -ca 
+
+2. Deploy the FabCar Chaincode 
+
+./network.sh deployCC -ccn fabcar -ccp ../fabcar/javascript -ccl javascript 
+
+Replace javascript with go or java as needed if you're using another language 
+
+implementation. 
+
+ 
+
+ 
+
+
+
+3. Set Up the Application Environment 
+
+cd 
+
+../fabcar/javascript 
+
+npm install 
+
+4. Enroll Admin and Register User 
+
+node enrollAdmin.js 
+
+node registerUser.js 
+
+5. Run FabCar Application 
+
+node invoke.js  # Adds a new car asset 
+
+node query.js # Queries all cars on 
+
+ledger 
+
+ 
+
+Sample Chaincode Logic: 
+
+• Cars have fields like: 
+
+• { 
+
+• "make": "Toyota", 
+
+• "model": "Prius", 
+
+• "color": "blue", 
+
+• "owner": "Tomoko" 
+
+• } 
+
+• Functions: 
+
+o InitLedger: Preloads some car records 
+
+o CreateCar: Add a new car 
+
+o QueryAllCars: Retrieve all car records 
+
+o ChangeCarOwner: Update ownership of a car 
+
+ 
+
+ 
+
+ 
+
+
+
+Expected Output: 
+
+• List of initial cars on the ledger. 
+
+• A new car asset is added successfully. 
+
+• Ownership of an existing car is transferred. 
+
+• Query results displayed in terminal (JSON format). 
+
+ 
+
+Result: 
+
+Students have gained hands-on experience with the basic life cycle of assets on the 
+
+blockchain using Hyperledger Fabric. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+Exp.:2:  Library Book Management System using 
+
+Hyperledger Fabric 
+
+ 
+
+Objective 
+
+To design and implement a decentralized Library Book Management System on the 
+
+Hyperledger Fabric platform, enabling secure, transparent, and auditable management of 
+
+books, borrowers, and transactions like issue/return. 
+
+ 
+
+ Prerequisites 
+
+• Ubuntu 20.04 or WSL2 setup 
+
+• Docker & Docker Compose 
+
+• Node.js v14.x or Go v1.17+ (depending on SDK) 
+
+• Fabric binaries and Docker images (version 2.2+ recommended) 
+
+• Basic understanding of: 
+
+o Blockchain and Hyperledger Fabric 
+
+o Chaincode (Smart Contract) 
+
+o YAML configuration 
+
+ 
+
+System Modules 
+
+1. Book Asset 
+
+Attributes: BookID, Title, Author, ISBN, Status (Available/Issued), BorrowerID 
+
+2. User Asset 
+
+Attributes: UserID, Name, Email, Role (Student/Faculty) 
+
+3. Transaction (Optional) 
+
+Attributes: TxID, BookID, UserID, IssueDate, ReturnDate 
+
+Procedure 
+
+  1. Environment Setup 
+
+Follow Hyperledger Fabric Prerequisite Setup Guide 
+
+• Install Docker, Node.js, Fabric samples, binaries, and Docker images 
+
+
+
+curl -sSL https://bit.ly/2ysbOFE | bash -s 
+
+ 
+
+2. Create the Network 
+
+Use test-network from Fabric samples. 
+
+cd fabric-samples/test-network 
+
+./network.sh up createChannel -c mychannel -ca 
+
+Deploy Chaincode: 
+
+./network.sh deployCC -ccn librarycc -ccp ../chaincode/library -ccl javascript 
+
+ 
+
+3. Chaincode (library.js) 
+
+Create a folder: fabric-samples/chaincode/library/javascript 
+
+Create library.js: 
+
+ 
+
+'use strict'; 
+
+const { Contract } = require('fabric-contract-api'); 
+
+class LibraryContract extends Contract { 
+
+ 
+
+  async initLedger(ctx) { 
+
+    console.info('Initializing Library...'); 
+
+    const books = [ 
+
+      { bookID: 'B001', title: 'Blockchain Basics', author: 'Daniel Drescher', isbn: 
+
+'9781484226032', status: 'Available', borrower: '' }, 
+
+    ]; 
+
+ 
+
+    for (const book of books) { 
+
+      await ctx.stub.putState(book.bookID, Buffer.from(JSON.stringify(book))); 
+
+    } 
+
+  } 
+
+ 
+
+  async addBook(ctx, bookID, title, author, isbn) { 
+
+    const book = { 
+
+      bookID, 
+
+      title, 
+
+      author, 
+
+      isbn, 
+
+
+
+      status: 'Available', 
+
+      borrower: '' 
+
+    }; 
+
+    await ctx.stub.putState(bookID, Buffer.from(JSON.stringify(book))); 
+
+  } 
+
+  async issueBook(ctx, bookID, userID) { 
+
+    const bookBytes = await ctx.stub.getState(bookID); 
+
+    if (!bookBytes || bookBytes.length === 0) throw new Error(`${bookID} not found`); 
+
+ 
+
+    const book = JSON.parse(bookBytes.toString()); 
+
+    if (book.status !== 'Available') throw new Error(`Book ${bookID} already issued`); 
+
+ 
+
+    book.status = 'Issued'; 
+
+    book.borrower = userID; 
+
+    await ctx.stub.putState(bookID, Buffer.from(JSON.stringify(book))); 
+
+  } 
+
+ 
+
+  async returnBook(ctx, bookID) { 
+
+    const bookBytes = await ctx.stub.getState(bookID); 
+
+    if (!bookBytes || bookBytes.length === 0) throw new Error(`${bookID} not found`); 
+
+ 
+
+    const book = JSON.parse(bookBytes.toString()); 
+
+    book.status = 'Available'; 
+
+    book.borrower = ''; 
+
+    await ctx.stub.putState(bookID, Buffer.from(JSON.stringify(book))); 
+
+  } 
+
+ 
+
+  async queryBook(ctx, bookID) { 
+
+    const bookBytes = await ctx.stub.getState(bookID); 
+
+    if (!bookBytes || bookBytes.length === 0) throw new Error(`${bookID} not found`); 
+
+    return bookBytes.toString(); 
+
+  } 
+
+ 
+
+  async getAllBooks(ctx) { 
+
+    const results = []; 
+
+
+
+    const iterator = await ctx.stub.getStateByRange('', ''); 
+
+    for await (const res of iterator) { 
+
+      results.push(JSON.parse(res.value.toString('utf8'))); 
+
+    } 
+
+    return JSON.stringify(results); 
+
+  } 
+
+} 
+
+ 
+
+module.exports = LibraryContract; 
+
+Create index.js: 
+
+'use strict'; 
+
+ 
+
+const LibraryContract = require('./library'); 
+
+ 
+
+module.exports.contracts = [LibraryContract]; 
+
+Install dependencies: 
+
+npm init -y 
+
+npm install fabric-contract-api 
+
+ 
+
+4. Invoke Chaincode  
+
+Example CLI commands: 
+
+# Add Book 
+
+peer chaincode invoke -C mychannel -n librarycc -c 
+
+'{"function":"addBook","Args":["B002","Hyperledger Fabric","Andreas 
+
+Ohlmer","9781492045397"]}' 
+
+ 
+
+# Issue Book 
+
+peer chaincode invoke -C mychannel -n librarycc -c 
+
+'{"function":"issueBook","Args":["B002","U123"]}' 
+
+ 
+
+# Return Book 
+
+peer chaincode invoke -C mychannel -n librarycc -c 
+
+'{"function":"returnBook","Args":["B002"]}' 
+
+ 
+
+# Query Book 
+
+
+
+peer chaincode query -C mychannel -n librarycc -c 
+
+'{"function":"queryBook","Args":["B002"]}' 
+
+ 
+
+Output: 
+
+ 
+
+Function Input Params Expected Output 
+
+addBook B003, Clean Code, Robert Martin Book added with status Available 
+
+issueBook B003, U101 Book B003 issued to U101 
+
+returnBook B003 Book B003 marked Available again 
+
+queryBook B003 Shows book details in JSON 
+
+getAllBooks — Lists all books 
+
+ 
+
+  
+
+Conclusion 
+
+This experiment demonstrated how Hyperledger Fabric can be used to implement a 
+
+decentralized Library Management System. It helped understand key concepts of asset 
+
+lifecycle, smart contracts, and blockchain-based transparency. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+Exp. 3 : Student Record Management System 
+
+ 
+
+Objective: 
+
+To implement a Student Record Management System on Hyperledger Fabric that allows 
+
+secure creation, retrieval, and modification of student data using smart contracts. 
+
+ 
+
+Prerequisites: 
+
+• Ubuntu 20.04 / WSL2 
+
+• Docker & Docker Compose 
+
+• Node.js v14.x / Go (based on SDK used) 
+
+• Hyperledger Fabric Samples, Binaries, and Docker Images 
+
+• curl -sSL https://bit.ly/2ysbOFE | bash -s 
+
+ 
+
+System Design 
+
+Asset: Student Record 
+
+Each student record will be stored as a JSON object on the ledger. 
+
+Field Type Description 
+
+studentID String Unique ID (e.g., S001) 
+
+name String Student name 
+
+department String Branch or Department 
+
+dob String Date of birth (YYYY-MM-DD) 
+
+email String Student’s email ID 
+
+grades Object Subject-grade mapping 
+
+ 
+
+Folder Structure 
+
+fabric-samples/ 
+
+├── chaincode/ 
+
+│   └── student/ 
+
+│       └── javascript/ 
+
+│           ├── student.js 
+
+
+
+│           └── index.js 
+
+└── test-network/ 
+
+ 
+
+Chaincode: student.js 
+
+'use strict'; 
+
+ 
+
+const { Contract } = require('fabric-contract-api'); 
+
+ 
+
+class StudentContract extends Contract { 
+
+ 
+
+  async initLedger(ctx) { 
+
+    const students = [ 
+
+      { 
+
+        studentID: 'S001', 
+
+        name: 'Alice', 
+
+        department: 'CSE', 
+
+        dob: '2002-01-10', 
+
+        email: 'alice@example.com', 
+
+        grades: {} 
+
+      }, 
+
+    ]; 
+
+ 
+
+    for (const student of students) { 
+
+      await ctx.stub.putState(student.studentID, Buffer.from(JSON.stringify(student))); 
+
+    } 
+
+  } 
+
+ 
+
+  async addStudent(ctx, studentID, name, department, dob, email) { 
+
+    const student = { 
+
+      studentID, 
+
+      name, 
+
+      department, 
+
+      dob, 
+
+      email, 
+
+      grades: {} 
+
+
+
+    }; 
+
+    await ctx.stub.putState(studentID, Buffer.from(JSON.stringify(student))); 
+
+  } 
+
+ 
+
+  async updateGrade(ctx, studentID, subject, grade) { 
+
+    const studentBytes = await ctx.stub.getState(studentID); 
+
+    if (!studentBytes || studentBytes.length === 0) { 
+
+      throw new Error(`Student ${studentID} not found`); 
+
+    } 
+
+    const student = JSON.parse(studentBytes.toString()); 
+
+    student.grades[subject] = grade; 
+
+    await ctx.stub.putState(studentID, Buffer.from(JSON.stringify(student))); 
+
+  } 
+
+ 
+
+  async getStudent(ctx, studentID) { 
+
+    const studentBytes = await ctx.stub.getState(studentID); 
+
+    if (!studentBytes || studentBytes.length === 0) { 
+
+      throw new Error(`Student ${studentID} not found`); 
+
+    } 
+
+    return studentBytes.toString(); 
+
+  } 
+
+ 
+
+  async getAllStudents(ctx) { 
+
+    const results = []; 
+
+    const iterator = await ctx.stub.getStateByRange('', ''); 
+
+    for await (const res of iterator) { 
+
+      results.push(JSON.parse(res.value.toString('utf8'))); 
+
+    } 
+
+    return JSON.stringify(results); 
+
+  } 
+
+} 
+
+ 
+
+module.exports = StudentContract; 
+
+ 
+
+ 
+
+
+
+ 
+
+index.js (#File name) 
+
+'use strict'; 
+
+ 
+
+const StudentContract = require('./student'); 
+
+module.exports.contracts = [StudentContract]; 
+
+ 
+
+ Deploy the Network & Chaincode 
+
+cd fabric-samples/test-network 
+
+ 
+
+# Start network and create channel 
+
+./network.sh up createChannel -c mychannel -ca 
+
+ 
+
+# Deploy chaincode 
+
+./network.sh deployCC -ccn studentcc -ccp ../chaincode/student -ccl javascript 
+
+ 
+
+Test the Chaincode (CLI) 
+
+Add a student: 
+
+peer chaincode invoke -C mychannel -n studentcc -c 
+
+'{"function":"addStudent","Args":["S002","Bob","ECE","2001-03-
+
+14","bob@example.com"]}' 
+
+Update grade: 
+
+peer chaincode invoke -C mychannel -n studentcc -c 
+
+'{"function":"updateGrade","Args":["S002","Math","A+"]}' 
+
+Query student: 
+
+peer chaincode query -C mychannel -n studentcc -c 
+
+'{"function":"getStudent","Args":["S002"]}' 
+
+List all students: 
+
+peer chaincode query -C mychannel -n studentcc -c 
+
+'{"function":"getAllStudents","Args":[]}' 
+
+ 
+
+Expected Output 
+
+Query Response: 
+
+{ 
+
+  "studentID": "S002", 
+
+
+
+  "name": "Bob", 
+
+  "department": "ECE", 
+
+  "dob": "2001-03-14", 
+
+  "email": "bob@example.com", 
+
+  "grades": { 
+
+    "Math": "A+" 
+
+  } 
+
+} 
+
+ 
+
+Conclusion 
+
+This lab demonstrated how blockchain can enhance security, transparency, and traceability 
+
+in managing sensitive academic data like student records using Hyperledger Fabric. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+Exp. 4:  Peer-to-Peer Fund Transfer System 
+
+ 
+
+Objective 
+
+To implement a decentralized digital wallet system using Hyperledger Fabric, where users 
+
+can transfer funds securely in a peer-to-peer (P2P) manner using smart contracts. 
+
+ 
+
+ Prerequisites 
+
+• Docker & Docker Compose 
+
+• Node.js (v14.x) or Go (if using Go SDK) 
+
+• Hyperledger Fabric samples, binaries, and Docker images: 
+
+• curl -sSL https://bit.ly/2ysbOFE | bash -s 
+
+ 
+
+System Design 
+
+Asset: User Wallet 
+
+Each user has a wallet on the ledger with a balance. 
+
+Field Type Description 
+
+userID String Unique ID of user (e.g., U001) 
+
+name String User name 
+
+balance Number Wallet balance in currency units 
+
+ 
+
+Folder Structure 
+
+fabric-samples/ 
+
+├── chaincode/ 
+
+│   └── wallet/ 
+
+│       └── javascript/ 
+
+│           ├── wallet.js 
+
+│           └── index.js 
+
+└── test-network/ 
+
+ 
+
+Chaincode: wallet.js 
+
+'use strict'; 
+
+ 
+
+const { Contract } = require('fabric-contract-api'); 
+
+
+
+ 
+
+class WalletContract extends Contract { 
+
+ 
+
+  async initLedger(ctx) { 
+
+    const users = [ 
+
+      { userID: 'U001', name: 'Alice', balance: 5000 }, 
+
+      { userID: 'U002', name: 'Bob', balance: 3000 } 
+
+    ]; 
+
+ 
+
+    for (const user of users) { 
+
+      await ctx.stub.putState(user.userID, Buffer.from(JSON.stringify(user))); 
+
+    } 
+
+  } 
+
+ 
+
+  async createUser(ctx, userID, name, initialBalance) { 
+
+    const user = { 
+
+      userID, 
+
+      name, 
+
+      balance: parseFloat(initialBalance) 
+
+    }; 
+
+    await ctx.stub.putState(userID, Buffer.from(JSON.stringify(user))); 
+
+  } 
+
+ 
+
+  async transferFunds(ctx, fromUserID, toUserID, amount) { 
+
+    const amountFloat = parseFloat(amount); 
+
+ 
+
+    const fromUserBytes = await ctx.stub.getState(fromUserID); 
+
+    const toUserBytes = await ctx.stub.getState(toUserID); 
+
+ 
+
+    if (!fromUserBytes || !toUserBytes || fromUserBytes.length === 0 || toUserBytes.length 
+
+=== 0) { 
+
+      throw new Error(`One or both user accounts not found.`); 
+
+    } 
+
+ 
+
+    const fromUser = JSON.parse(fromUserBytes.toString()); 
+
+
+
+    const toUser = JSON.parse(toUserBytes.toString()); 
+
+ 
+
+    if (fromUser.balance < amountFloat) { 
+
+      throw new Error(`Insufficient funds in ${fromUserID}`); 
+
+    } 
+
+ 
+
+    fromUser.balance -= amountFloat; 
+
+    toUser.balance += amountFloat; 
+
+ 
+
+    await ctx.stub.putState(fromUserID, Buffer.from(JSON.stringify(fromUser))); 
+
+    await ctx.stub.putState(toUserID, Buffer.from(JSON.stringify(toUser))); 
+
+  } 
+
+ 
+
+  async getUser(ctx, userID) { 
+
+    const userBytes = await ctx.stub.getState(userID); 
+
+    if (!userBytes || userBytes.length === 0) { 
+
+      throw new Error(`User ${userID} not found`); 
+
+    } 
+
+    return userBytes.toString(); 
+
+  } 
+
+ 
+
+  async getAllUsers(ctx) { 
+
+    const results = []; 
+
+    const iterator = await ctx.stub.getStateByRange('', ''); 
+
+    for await (const res of iterator) { 
+
+      results.push(JSON.parse(res.value.toString('utf8'))); 
+
+    } 
+
+    return JSON.stringify(results); 
+
+  } 
+
+} 
+
+ 
+
+module.exports = WalletContract; 
+
+ 
+
+index.js (#file name) 
+
+'use strict'; 
+
+
+
+ 
+
+const WalletContract = require('./wallet'); 
+
+module.exports.contracts = [WalletContract]; 
+
+ 
+
+Deploy the Network & Chaincode 
+
+cd fabric-samples/test-network 
+
+ 
+
+# Start network and create channel 
+
+./network.sh up createChannel -c mychannel -ca 
+
+ 
+
+# Deploy wallet chaincode 
+
+./network.sh deployCC -ccn walletcc -ccp ../chaincode/wallet -ccl javascript 
+
+ 
+
+Test the Chaincode (CLI) 
+
+Create a new user: 
+
+peer chaincode invoke -C mychannel -n walletcc -c 
+
+'{"function":"createUser","Args":["U003","Charlie","1000"]}' 
+
+Transfer funds: 
+
+peer chaincode invoke -C mychannel -n walletcc -c 
+
+'{"function":"transferFunds","Args":["U001","U002","1000"]}' 
+
+Query user: 
+
+peer chaincode query -C mychannel -n walletcc -c 
+
+'{"function":"getUser","Args":["U002"]}' 
+
+ List all users: 
+
+peer chaincode query -C mychannel -n walletcc -c '{"function":"getAllUsers","Args":[]}' 
+
+ 
+
+ Expected Output 
+
+getUser Response: 
+
+{ 
+
+  "userID": "U002", 
+
+  "name": "Bob", 
+
+  "balance": 4000 
+
+} 
+
+ 
+
+ 
+
+
+
+Conclusion 
+
+This lab demonstrated a secure P2P fund transfer system using Hyperledger Fabric, 
+
+showcasing blockchain’s ability to track transactions immutably, prevent double-spending, 
+
+and remove intermediaries. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+Exp. 5 : Employee Payroll Management System 
+
+ 
+
+Objective 
+
+To implement an Employee Payroll Management System on Hyperledger Fabric that 
+
+securely manages employee details, salary records, and payroll processing on a tamper-
+
+proof distributed ledger. 
+
+Prerequisites 
+
+• Docker & Docker Compose 
+
+• Node.js (v14.x) or Go (if using Go SDK) 
+
+• Hyperledger Fabric binaries and Docker images: 
+
+• curl -sSL https://bit.ly/2ysbOFE | bash -s 
+
+ 
+
+System Design 
+
+Asset: Employee Record 
+
+Each employee’s payroll data is stored as an asset. 
+
+Field Type Description 
+
+empID String Unique employee ID (e.g., E001) 
+
+name String Full name 
+
+department String Department name 
+
+salary Number Monthly salary 
+
+lastPaidDate String Last salary payment date (YYYY-MM-DD) 
+
+ 
+
+ Folder Structure 
+
+fabric-samples/ 
+
+├── chaincode/ 
+
+│   └── payroll/ 
+
+│       └── javascript/ 
+
+│           ├── payroll.js 
+
+│           └── index.js 
+
+└── test-network/ 
+
+ 
+
+ 
+
+
+
+Chaincode: payroll.js 
+
+'use strict'; 
+
+ 
+
+const { Contract } = require('fabric-contract-api'); 
+
+ 
+
+class PayrollContract extends Contract { 
+
+ 
+
+  async initLedger(ctx) { 
+
+    const employees = [ 
+
+      { empID: 'E001', name: 'Alice', department: 'HR', salary: 50000, lastPaidDate: '' }, 
+
+      { empID: 'E002', name: 'Bob', department: 'IT', salary: 60000, lastPaidDate: '' } 
+
+    ]; 
+
+ 
+
+    for (const emp of employees) { 
+
+      await ctx.stub.putState(emp.empID, Buffer.from(JSON.stringify(emp))); 
+
+    } 
+
+  } 
+
+ 
+
+  async addEmployee(ctx, empID, name, department, salary) { 
+
+    const emp = { 
+
+      empID, 
+
+      name, 
+
+      department, 
+
+      salary: parseFloat(salary), 
+
+      lastPaidDate: '' 
+
+    }; 
+
+    await ctx.stub.putState(empID, Buffer.from(JSON.stringify(emp))); 
+
+  } 
+
+ 
+
+  async processPayroll(ctx, empID, date) { 
+
+    const empBytes = await ctx.stub.getState(empID); 
+
+    if (!empBytes || empBytes.length === 0) { 
+
+      throw new Error(`Employee ${empID} not found`); 
+
+    } 
+
+ 
+
+
+
+    const emp = JSON.parse(empBytes.toString()); 
+
+    emp.lastPaidDate = date; 
+
+    await ctx.stub.putState(empID, Buffer.from(JSON.stringify(emp))); 
+
+  } 
+
+ 
+
+  async getEmployee(ctx, empID) { 
+
+    const empBytes = await ctx.stub.getState(empID); 
+
+    if (!empBytes || empBytes.length === 0) { 
+
+      throw new Error(`Employee ${empID} not found`); 
+
+    } 
+
+    return empBytes.toString(); 
+
+  } 
+
+ 
+
+  async getAllEmployees(ctx) { 
+
+    const results = []; 
+
+    const iterator = await ctx.stub.getStateByRange('', ''); 
+
+    for await (const res of iterator) { 
+
+      results.push(JSON.parse(res.value.toString('utf8'))); 
+
+    } 
+
+    return JSON.stringify(results); 
+
+  } 
+
+} 
+
+ 
+
+module.exports = PayrollContract; 
+
+ 
+
+index.js 
+
+'use strict'; 
+
+ 
+
+const PayrollContract = require('./payroll'); 
+
+module.exports.contracts = [PayrollContract]; 
+
+ 
+
+Deploy Network and Chaincode 
+
+cd fabric-samples/test-network 
+
+ 
+
+# Start network and create channel 
+
+
+
+./network.sh up createChannel -c mychannel -ca 
+
+ 
+
+# Deploy payroll chaincode 
+
+./network.sh deployCC -ccn payrollcc -ccp ../chaincode/payroll -ccl javascript 
+
+ 
+
+Test Payroll Chaincode (CLI) 
+
+ Add an employee: 
+
+peer chaincode invoke -C mychannel -n payrollcc -c 
+
+'{"function":"addEmployee","Args":["E003","Charlie","Finance","55000"]}' 
+
+Process salary payment: 
+
+peer chaincode invoke -C mychannel -n payrollcc -c 
+
+'{"function":"processPayroll","Args":["E003","2025-07-01"]}' 
+
+Query employee: 
+
+peer chaincode query -C mychannel -n payrollcc -c 
+
+'{"function":"getEmployee","Args":["E003"]}' 
+
+  List all employees: 
+
+peer chaincode query -C mychannel -n payrollcc -c 
+
+'{"function":"getAllEmployees","Args":[]}' 
+
+ 
+
+Expected Output 
+
+Sample Output of getEmployee: 
+
+{ 
+
+  "empID": "E003", 
+
+  "name": "Charlie", 
+
+  "department": "Finance", 
+
+  "salary": 55000, 
+
+  "lastPaidDate": "2025-07-01" 
+
+} 
+
+ 
+
+Conclusion 
+
+This lab illustrates how Hyperledger Fabric can be used to build a decentralized employee 
+
+payroll system that guarantees security, transparency, and immutability of salary 
+
+transactions. 
+
+ 
+
+ 
+
+
+
+Exp. 6: Property Registration and Transfer System 
+
+ 
+
+Objective 
+
+To develop a blockchain-based system that allows secure, immutable, and transparent 
+
+property registration and ownership transfer using Hyperledger Fabric. 
+
+ 
+
+Prerequisites 
+
+• Docker & Docker Compose 
+
+• Node.js v14.x or Go 
+
+• Hyperledger Fabric binaries, samples, and Docker images 
+
+• curl -sSL https://bit.ly/2ysbOFE | bash -s 
+
+ 
+
+System Design 
+
+ Asset: Property Record 
+
+Field Type Description 
+
+propertyID String Unique ID of the property (e.g., P001) 
+
+ownerID String ID of the current owner 
+
+location String Property address or region 
+
+area String Size (e.g., "1200 sqft") 
+
+marketValue Number Current market value 
+
+status String “Registered”, “Transferred” 
+
+ 
+
+Folder Structure 
+
+fabric-samples/ 
+
+├── chaincode/ 
+
+│   └── property/ 
+
+│       └── javascript/ 
+
+│           ├── property.js 
+
+│           └── index.js 
+
+└── test-network/ 
+
+ 
+
+
+
+Chaincode: property.js 
+
+'use strict'; 
+
+ 
+
+const { Contract } = require('fabric-contract-api'); 
+
+ 
+
+class PropertyContract extends Contract { 
+
+ 
+
+  async initLedger(ctx) { 
+
+    const properties = [ 
+
+      { 
+
+        propertyID: 'P001', 
+
+        ownerID: 'U001', 
+
+        location: 'Bangalore', 
+
+        area: '1200 sqft', 
+
+        marketValue: 4500000, 
+
+        status: 'Registered' 
+
+      } 
+
+    ]; 
+
+ 
+
+    for (const property of properties) { 
+
+      await ctx.stub.putState(property.propertyID, Buffer.from(JSON.stringify(property))); 
+
+    } 
+
+  } 
+
+ 
+
+  async registerProperty(ctx, propertyID, ownerID, location, area, value) { 
+
+    const property = { 
+
+      propertyID, 
+
+      ownerID, 
+
+      location, 
+
+      area, 
+
+      marketValue: parseFloat(value), 
+
+      status: 'Registered' 
+
+    }; 
+
+    await ctx.stub.putState(propertyID, Buffer.from(JSON.stringify(property))); 
+
+  } 
+
+
+
+ 
+
+  async transferProperty(ctx, propertyID, newOwnerID) { 
+
+    const propBytes = await ctx.stub.getState(propertyID); 
+
+    if (!propBytes || propBytes.length === 0) { 
+
+      throw new Error(`Property ${propertyID} not found`); 
+
+    } 
+
+ 
+
+    const property = JSON.parse(propBytes.toString()); 
+
+    property.ownerID = newOwnerID; 
+
+    property.status = 'Transferred'; 
+
+    await ctx.stub.putState(propertyID, Buffer.from(JSON.stringify(property))); 
+
+  } 
+
+ 
+
+  async getProperty(ctx, propertyID) { 
+
+    const propBytes = await ctx.stub.getState(propertyID); 
+
+    if (!propBytes || propBytes.length === 0) { 
+
+      throw new Error(`Property ${propertyID} not found`); 
+
+    } 
+
+    return propBytes.toString(); 
+
+  } 
+
+ 
+
+  async getAllProperties(ctx) { 
+
+    const results = []; 
+
+    const iterator = await ctx.stub.getStateByRange('', ''); 
+
+    for await (const res of iterator) { 
+
+      results.push(JSON.parse(res.value.toString('utf8'))); 
+
+    } 
+
+    return JSON.stringify(results); 
+
+  } 
+
+} 
+
+ 
+
+module.exports = PropertyContract; 
+
+ 
+
+ 
+
+ 
+
+
+
+index.js 
+
+'use strict'; 
+
+const PropertyContract = require('./property'); 
+
+module.exports.contracts = [PropertyContract]; 
+
+ 
+
+Deploy Network and Chaincode 
+
+cd fabric-samples/test-network 
+
+ 
+
+# Start network 
+
+./network.sh up createChannel -c mychannel -ca 
+
+ 
+
+# Deploy chaincode 
+
+./network.sh deployCC -ccn propertycc -ccp ../chaincode/property -ccl javascript 
+
+ 
+
+Chaincode Testing via CLI 
+
+Register a new property: 
+
+peer chaincode invoke -C mychannel -n propertycc -c 
+
+'{"function":"registerProperty","Args":["P002","U002","Mumbai","900 sqft","5500000"]}' 
+
+Transfer ownership: 
+
+peer chaincode invoke -C mychannel -n propertycc -c 
+
+'{"function":"transferProperty","Args":["P002","U003"]}' 
+
+Query property: 
+
+peer chaincode query -C mychannel -n propertycc -c 
+
+'{"function":"getProperty","Args":["P002"]}' 
+
+List all properties: 
+
+peer chaincode query -C mychannel -n propertycc -c 
+
+'{"function":"getAllProperties","Args":[]}' 
+
+ 
+
+Expected Output 
+
+{ 
+
+  "propertyID": "P002", 
+
+  "ownerID": "U003", 
+
+  "location": "Mumbai", 
+
+  "area": "900 sqft", 
+
+  "marketValue": 5500000, 
+
+
+
+  "status": "Transferred" 
+
+} 
+
+ 
+
+Conclusion 
+
+This lab illustrates how blockchain and Hyperledger Fabric can be used to modernize 
+
+property registration systems by increasing trust, eliminating fraud, and improving 
+
+transparency in land transactions. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+Exp. 7: Academic Credential Verification using 
+
+Hyperledger Fabric 
+
+Objective: 
+
+To develop a blockchain-based application to securely store and verify academic credentials 
+
+(e.g., degrees, marksheets, certificates) using Hyperledger Fabric. 
+
+ 
+
+Pre-requisites: 
+
+• Basic understanding of Hyperledger Fabric architecture. 
+
+• Familiarity with Chaincode (smart contract) in Go or JavaScript. 
+
+• Installed Hyperledger Fabric samples, binaries, and Docker. 
+
+• Tools: VS Code, Postman, Docker, Node.js, Fabric CA (or cryptogen). 
+
+ 
+
+Network Configuration: 
+
+Organizations: 
+
+• Org1: University (Issuer of credentials) 
+
+• Org2: Employer or Verifier 
+
+Peers: 
+
+• peer0.org1.example.com 
+
+• peer0.org2.example.com 
+
+Channel: 
+
+• mychannel 
+
+Chaincode: 
+
+• Name: credentialcc 
+
+• Language: JavaScript (or Go) 
+
+• Version: 1.0 
+
+ 
+
+ 
+
+ 
+
+
+
+Step 1: Define Credential Data Model 
+
+Example JSON structure of academic credential: 
+
+{ 
+
+  "credentialID": "CRED1001", 
+
+  "studentName": "Alice Johnson", 
+
+  "university": "ABC University", 
+
+  "degree": "B.Tech Computer Science", 
+
+  "year": "2024", 
+
+  "grade": "A+", 
+
+  "issuedDate": "2024-06-15" 
+
+} 
+
+ 
+
+Step 2: Chaincode (credentialcc.js) 
+
+'use strict'; 
+
+ 
+
+const { Contract } = require('fabric-contract-api'); 
+
+ 
+
+class CredentialContract extends Contract { 
+
+ 
+
+  async initLedger(ctx) { 
+
+    const credentials = [ 
+
+      { 
+
+        credentialID: 'CRED1001', 
+
+        studentName: 'Alice Johnson', 
+
+        university: 'ABC University', 
+
+        degree: 'B.Tech Computer Science', 
+
+        year: '2024', 
+
+        grade: 'A+', 
+
+        issuedDate: '2024-06-15' 
+
+      } 
+
+    ]; 
+
+ 
+
+    for (const credential of credentials) { 
+
+      await ctx.stub.putState(credential.credentialID, 
+
+Buffer.from(JSON.stringify(credential))); 
+
+
+
+    } 
+
+  } 
+
+ 
+
+  async addCredential(ctx, credentialID, studentName, university, degree, year, grade, 
+
+issuedDate) { 
+
+    const credential = { 
+
+      credentialID, 
+
+      studentName, 
+
+      university, 
+
+      degree, 
+
+      year, 
+
+      grade, 
+
+      issuedDate 
+
+    }; 
+
+    await ctx.stub.putState(credentialID, Buffer.from(JSON.stringify(credential))); 
+
+    return JSON.stringify(credential); 
+
+  } 
+
+ 
+
+  async getCredential(ctx, credentialID) { 
+
+    const credentialAsBytes = await ctx.stub.getState(credentialID); 
+
+    if (!credentialAsBytes || credentialAsBytes.length === 0) { 
+
+      throw new Error(`Credential ${credentialID} does not exist`); 
+
+    } 
+
+    return credentialAsBytes.toString(); 
+
+  } 
+
+ 
+
+  async verifyCredential(ctx, credentialID) { 
+
+    const credentialAsBytes = await ctx.stub.getState(credentialID); 
+
+    if (!credentialAsBytes || credentialAsBytes.length === 0) { 
+
+      return false; 
+
+    } 
+
+    return true; 
+
+  } 
+
+} 
+
+ 
+
+
+
+module.exports = CredentialContract; 
+
+ 
+
+Step 3: Deploy the Chaincode 
+
+peer lifecycle chaincode package credentialcc.tar.gz --path ./chaincode/credentialcc --lang 
+
+node --label credentialcc_1 
+
+peer lifecycle chaincode install credentialcc.tar.gz 
+
+peer lifecycle chaincode approveformyorg ... 
+
+peer lifecycle chaincode commit ... 
+
+ 
+
+Step 4: Interact with Chaincode via CLI / REST API 
+
+Add Credential 
+
+peer chaincode invoke -o localhost:7050 \ 
+
+  -C mychannel -n credentialcc \ 
+
+  -c '{"function":"addCredential","Args":["CRED1002","Bob Smith","XYZ 
+
+University","MSc AI","2023","A","2023-07-15"]}' 
+
+ View Credential 
+
+peer chaincode query -C mychannel -n credentialcc -c 
+
+'{"function":"getCredential","Args":["CRED1002"]}' 
+
+Verify Credential 
+
+peer chaincode query -C mychannel -n credentialcc -c 
+
+'{"function":"verifyCredential","Args":["CRED1002"]}' 
+
+ 
+
+Sample Test Cases 
+
+Test Case Input Expected Result 
+
+Add new credential All fields of credential Should return confirmation 
+
+View credential Valid ID Should return correct data 
+
+View credential Invalid ID Should throw error 
+
+Verify credential Valid ID true 
+
+Verify credential Invalid ID false 
+
+ 
+
+Result: 
+
+The student successfully deployed and tested a blockchain-based credential verification 
+
+system using Hyperledger Fabric. 
+
+ 
+
+
+
+Exp. 8: E-commerce Product Catalog using Hyperledger 
+
+Fabric 
+
+Objective: 
+
+To create a blockchain-based application that allows secure creation, storage, retrieval, and 
+
+listing of products in an e-commerce catalog using Hyperledger Fabric. 
+
+ 
+
+ Pre-requisites: 
+
+• Familiarity with Hyperledger Fabric, Chaincode, Docker, Node.js 
+
+• Tools: VS Code, Postman (for REST calls), Fabric binaries setup 
+
+ 
+
+Network Configuration 
+
+Organizations: 
+
+• Org1: Seller Organization 
+
+• Org2: Buyer Organization 
+
+Peers: 
+
+• peer0.org1.example.com 
+
+• peer0.org2.example.com 
+
+Channel: 
+
+• ecommercechannel 
+
+Chaincode: 
+
+• Name: productcc 
+
+• Language: JavaScript (Node.js) 
+
+• Version: 1.0 
+
+ 
+
+ Product Data Model 
+
+Each product in the catalog will contain: 
+
+{ 
+
+  "productID": "P001", 
+
+  "name": "Wireless Mouse", 
+
+  "description": "Ergonomic wireless mouse with USB receiver", 
+
+
+
+  "price": "799", 
+
+  "quantity": "150", 
+
+  "seller": "TechStore" 
+
+} 
+
+ Step 1: Chaincode (productcc.js) 
+
+'use strict'; 
+
+ 
+
+const { Contract } = require('fabric-contract-api'); 
+
+ 
+
+class ProductContract extends Contract { 
+
+ 
+
+  async initLedger(ctx) { 
+
+    const products = [ 
+
+      { 
+
+        productID: 'P001', 
+
+        name: 'Wireless Mouse', 
+
+        description: 'Ergonomic wireless mouse with USB receiver', 
+
+        price: '799', 
+
+        quantity: '150', 
+
+        seller: 'TechStore' 
+
+      } 
+
+    ]; 
+
+ 
+
+    for (const product of products) { 
+
+      await ctx.stub.putState(product.productID, Buffer.from(JSON.stringify(product))); 
+
+    } 
+
+  } 
+
+ 
+
+  async addProduct(ctx, productID, name, description, price, quantity, seller) { 
+
+    const product = { 
+
+      productID, 
+
+      name, 
+
+      description, 
+
+      price, 
+
+      quantity, 
+
+
+
+      seller 
+
+    }; 
+
+    await ctx.stub.putState(productID, Buffer.from(JSON.stringify(product))); 
+
+    return JSON.stringify(product); 
+
+  } 
+
+ 
+
+  async getProduct(ctx, productID) { 
+
+    const productAsBytes = await ctx.stub.getState(productID); 
+
+    if (!productAsBytes || productAsBytes.length === 0) { 
+
+      throw new Error(`Product ${productID} does not exist`); 
+
+    } 
+
+    return productAsBytes.toString(); 
+
+  } 
+
+ 
+
+  async getAllProducts(ctx) { 
+
+    const iterator = await ctx.stub.getStateByRange('', ''); 
+
+    const allResults = []; 
+
+    while (true) { 
+
+      const res = await iterator.next(); 
+
+      if (res.value && res.value.value.toString()) { 
+
+        allResults.push(JSON.parse(res.value.value.toString('utf8'))); 
+
+      } 
+
+      if (res.done) { 
+
+        await iterator.close(); 
+
+        return JSON.stringify(allResults); 
+
+      } 
+
+    } 
+
+  } 
+
+} 
+
+ 
+
+module.exports = ProductContract; 
+
+ 
+
+Step 2: Deploy the Chaincode 
+
+peer lifecycle chaincode package productcc.tar.gz --path ./chaincode/productcc --lang node 
+
+--label productcc_1 
+
+
+
+peer lifecycle chaincode install productcc.tar.gz 
+
+peer lifecycle chaincode approveformyorg ... 
+
+peer lifecycle chaincode commit ... 
+
+ 
+
+Step 3: Interact with Chaincode 
+
+Add Product 
+
+peer chaincode invoke -o localhost:7050 \ 
+
+  -C ecommercechannel -n productcc \ 
+
+  -c '{"function":"addProduct","Args":["P002","Bluetooth Keyboard","Compact Bluetooth 
+
+keyboard","1499","200","GadgetWorld"]}' 
+
+ View Product 
+
+peer chaincode query -C ecommercechannel -n productcc \ 
+
+  -c '{"function":"getProduct","Args":["P002"]}' 
+
+List All Products 
+
+peer chaincode query -C ecommercechannel -n productcc \ 
+
+  -c '{"function":"getAllProducts","Args":[]}' 
+
+ 
+
+ Sample Test Cases 
+
+ 
+
+Test Case Input Expected Result 
+
+Add new product All product details Product added to ledger 
+
+Get product Valid Product ID Product JSON returned 
+
+Get product Invalid Product ID Error message 
+
+Get all products N/A All products in catalog 
+
+ 
+
+Result: 
+
+Successfully created a decentralized e-commerce catalog where products can be added, 
+
+viewed, and listed in a tamper-proof manner.

@@ -900,19 +900,19 @@ query_products: `$ peer chaincode query -C ecommercechannel -n productcc -c '{"f
 ];
 
 // Helper function to simulate typing with delays
-const simulateTyping = (text, delay = 50) => {
-return new Promise((resolve) => {
-let index = 0;
-const interval = setInterval(() => {
-if (index < text.length) {
-index++;
-} else {
-clearInterval(interval);
-resolve();
-}
-}, delay);
-});
-};
+// const simulateTyping = (text, delay = 50) => {
+// return new Promise((resolve) => {
+// let index = 0;
+// const interval = setInterval(() => {
+// if (index < text.length) {
+// index++;
+// } else {
+// clearInterval(interval);
+// resolve();
+// }
+// }, delay);
+// });
+// };
 
 // Helper function to add history items with delays
 const addHistoryWithDelay = async (items, baseDelay = 800) => {
